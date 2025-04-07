@@ -31,4 +31,5 @@
 * main(prod)
 * dev
 * hotfix
-* feature -> 
+* feature (issue 생성 후 브랜치 만들 때)
+  ex) feat/#{이슈 번호}, fix/#{이슈 번호} etc...
