@@ -18,6 +18,17 @@ variable "boot_image" {
   type        = string
 }
 
+variable "boot_disk_size" {
+  description = "Boot disk size in GB"
+  type        = number# 기본값 50GB
+}
+
+variable "boot_disk_type" {
+  description = "Boot disk type (pd-standard, pd-ssd, pd-balanced)"
+  type        = string
+}
+
+
 variable "vpc" {
   description = "연결할 VPC 네트워크 이름"
   type        = string
