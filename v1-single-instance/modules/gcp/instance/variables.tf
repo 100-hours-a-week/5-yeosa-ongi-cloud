@@ -44,3 +44,15 @@ variable "tags" {
   type        = list(string)
   default     = []
 }
+
+variable "assign_external_ip" {
+  description = "외부 IP를 부여할지 여부"
+  type        = bool
+  default     = false
+}
+
+variable "use_static_ip" {
+  description = "고정 IP를 사용할지 여부 (assign_external_ip=true일 때만 적용됨)"
+  type        = bool
+  default     = false
+}
