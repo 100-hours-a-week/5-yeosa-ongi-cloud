@@ -23,6 +23,8 @@ module "web_instance" {
   vpc             = module.vpc.vpc_name
   subnet          = module.vpc.subnet_self_link
   tags            = ["dev-web"]
+  assign_external_ip = true
+  use_static_ip  = true
 }
 
 module "ai_instance" {
@@ -36,6 +38,7 @@ module "ai_instance" {
   vpc             = module.vpc.vpc_name
   subnet          = module.vpc.subnet_self_link
   tags            = ["dev-ai"]
+  assign_external_ip = false
 }
 
 module "firewall_allow_ai" {
