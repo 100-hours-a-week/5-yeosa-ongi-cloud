@@ -5,25 +5,44 @@
 ```
 5-YEOSA-ONGI-CLOUD
 ├── .github
-├── modules
-│   ├── aws
-│   └── gcp
-│       ├── firewall
-│       ├── instance
-│       ├── service-account
-│       ├── storage
-│       └── vpc
-├── v1-single-instance
-│   └── env
-│       ├── dev
-│       └── prod
-├── v2-3-tier
-│   └── env
-│       ├── dev
-│       └── prod
-├── .gitignore
-└── README.md
+├── v1-single-instance/               # GCP 단일 인스턴스 구성용 인프라
+│   ├── env/                          # 환경별(tfvars) 설정
+│   │   ├── dev/                      # 개발 환경
+│   │   └── prod/                     # 운영 환경
+│   └── modules/                      # 재사용 가능한 모듈
+│       ├── aws/                      # AWS 리소스 모듈
+│       │   ├── cdn/
+│       │   └── s3/
+│       └── gcp/                      # GCP 리소스 모듈
+│           ├── cdn/
+│           ├── firewall/
+│           ├── instance/
+│           ├── storage/
+│           └── vpc/
+
+├── v2-3-tier/                        # GCP 3-Tier 아키텍처 구성용 인프라
+│   ├── env/                          # 환경별 구성
+│   │   ├── dev/                      # 개발 환경
+│   │   └── prod/                     # 운영 환경
+│   └── modules/                      # GCP 리소스 모듈
+│       └── gcp/
+│           ├── ai-instance/         # AI 서버 인스턴스 모듈
+│           ├── backend-instance/    # 백엔드 서버 인스턴스 모듈
+│           ├── cdn/                 # Cloud CDN 구성
+│           ├── db/                  # Cloud SQL 등 데이터베이스 리소스
+│           ├── firewall/            # 방화벽 규칙 정의
+│           ├── nat/                 # NAT Gateway 구성
+│           ├── openvpn/             # VPN 서버 구성
+│           ├── storage/             # GCS 버킷 등 저장소 관련 리소스
+│           └── vpc/                 # VPC, 서브넷, 라우팅 구성
+
 ```
+
+## v1-single-instance
+![5-ys-Architecture-단일 인스턴스 설계 drawio (2)](https://github.com/user-attachments/assets/d02e3221-b7c4-474d-b81f-53ec37267f6c)
+
+## v2-3-tier
+![5-ys-Architecture-PNG 내보내기 창 drawio (1)](https://github.com/user-attachments/assets/5f198a10-ffe0-40a4-96d3-3ce92e39b73e)
 
 
 ## Commit Convention
