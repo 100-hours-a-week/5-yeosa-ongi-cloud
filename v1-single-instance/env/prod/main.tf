@@ -22,7 +22,7 @@ module "web_instance" {
   boot_disk_type  = "pd-standard"
   vpc             = module.vpc.vpc_name
   subnet          = module.vpc.subnet_self_link
-  tags            = ["prod-web"]
+  tags            = ["http-server","https-server","prod-web"]
   assign_external_ip = true
   use_static_ip  = true
 }
@@ -38,7 +38,23 @@ module "ai_instance" {
   vpc             = module.vpc.vpc_name
   subnet          = module.vpc.subnet_self_link
   tags            = ["prod-ai"]
-  assign_external_ip = false
+  assign_external_ip = true
+  use_static_ip  = true
+}
+
+module "monitor_instance" {
+  source          = "../../modules/gcp/instance"
+  instance_name   = "prod-ongi-monitor"
+  zone            = var.zone
+  machine_type    = "e2-medium"
+  boot_image      = "ubuntu-os-cloud/ubuntu-2204-lts"
+  boot_disk_size  = 20
+  boot_disk_type  = "pd-standard"
+  vpc             = module.vpc.vpc_name
+  subnet          = module.vpc.subnet_self_link
+  tags            = ["prod-monitor"]
+  assign_external_ip = true
+  use_static_ip  = true
 }
 
 module "firewall_allow_ai" {
@@ -66,4 +82,31 @@ module "firewall_allow_http_ssh" {
   allowed_ports = ["22", "80", "443"]
   source_ranges = ["0.0.0.0/0"]
   target_tags   = ["prod-web", "prod-ai"]
+}
+
+module "firewall_allow_prometheus" {
+  source        = "../../modules/gcp/firewall"
+  firewall_name = "prod-allow-prometheus"
+  vpc           = module.vpc.vpc_name
+  allowed_ports = ["9090"]
+  source_ranges = ["211.244.225.0/24"]
+  target_tags   = ["prod-monior"]
+}
+
+module "firewall_allow_grafana" {
+  source        = "../../modules/gcp/firewall"
+  firewall_name = "prod-allow-grafana"
+  vpc           = module.vpc.vpc_name
+  allowed_ports = ["3000"]
+  source_ranges = ["211.244.225.0/24"]
+  target_tags   = ["prod-monior"]
+}
+
+module "snapshot_policy" {
+  source = "../../modules/gcp/snapshot_policy"
+  zone          = var.zone
+  web_snapshot_policy = "prod-web-snapshot-policy"
+  ai_snapshot_policy  = "prod-ai-snapshot-policy"
+  web_boot_disk_name = module.web_instance.boot_disk_name
+  ai_boot_disk_name   = module.ai_instance.boot_disk_name
 }
