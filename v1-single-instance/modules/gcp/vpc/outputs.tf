@@ -5,7 +5,7 @@ output "vpc_name" {
 
 output "subnet_self_link" {
   description = "서브넷 self link"
-  value       = google_compute_subnetwork.subnet.self_link
+  value       = google_compute_subnetwork.public_subnet.self_link
 }
 
 output "network_self_link" {

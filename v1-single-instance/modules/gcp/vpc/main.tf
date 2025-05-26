@@ -4,9 +4,9 @@ resource "google_compute_network" "vpc_network" {
   routing_mode            = "REGIONAL"
 }
 
-resource "google_compute_subnetwork" "subnet" {
+resource "google_compute_subnetwork" "public_subnet" {
   name          = var.subnet_name
   ip_cidr_range = var.ip_cidr_range
-  region        = var.region
   network       = google_compute_network.vpc_network.id
+  private_ip_google_access = true
 }
