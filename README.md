@@ -17,6 +17,7 @@
 │           ├── cdn/
 │           ├── firewall/
 │           ├── instance/
+│           └── snapshop_policy/
 │           ├── storage/
 │           └── vpc/
 
