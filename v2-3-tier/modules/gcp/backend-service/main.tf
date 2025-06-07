@@ -16,12 +16,14 @@ resource "google_compute_instance_template" "template" {
   lifecycle {
     create_before_destroy = true
   }
+
+  metadata_startup_script = file("${path.root}/scripts/install_docker.sh") 
 }
 
 resource "google_compute_region_instance_group_manager" "mig" {
   name                      = "${var.name}-mig"
   region                    = var.region
-  base_instance_name        = "${var.name}-instance"
+  base_instance_name        = "${var.name}"
   distribution_policy_zones = var.zones
 
   version {
@@ -36,21 +38,21 @@ resource "google_compute_region_instance_group_manager" "mig" {
   }
 }
 
-resource "google_compute_region_autoscaler" "autoscaler" {
-  name   = "${var.name}-autoscaler"
-  region = var.region
-  target = google_compute_region_instance_group_manager.mig.self_link
+# resource "google_compute_region_autoscaler" "autoscaler" {
+#   name   = "${var.name}-autoscaler"
+#   region = var.region
+#   target = google_compute_region_instance_group_manager.mig.self_link
 
-  autoscaling_policy {
-    max_replicas    = var.max_replicas
-    min_replicas    = var.min_replicas
-    cooldown_period = 60
+#   autoscaling_policy {
+#     max_replicas    = var.max_replicas
+#     min_replicas    = var.min_replicas
+#     cooldown_period = 60
 
-    cpu_utilization {
-      target = var.cpu_utilization_target
-    }
-  }
-  depends_on = [
-    google_compute_region_instance_group_manager.mig
-  ]
-}
+#     cpu_utilization {
+#       target = var.cpu_utilization_target
+#     }
+#   }
+#   depends_on = [
+#     google_compute_region_instance_group_manager.mig
+#   ]
+# }
