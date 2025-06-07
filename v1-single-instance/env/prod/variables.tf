@@ -12,3 +12,7 @@ variable "zone" {
   description = "GCP zone"
   type        = string
 }
+
+variable "web_ip_ranges" {
+  type = list(string)
+}

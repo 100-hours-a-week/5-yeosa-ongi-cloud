@@ -48,7 +48,7 @@ resource "google_compute_region_instance_group_manager" "mig" {
 #     min_replicas    = var.min_replicas
 #     cooldown_period = 60
 
-#     cpu_utilization {
+#     cpu_utilization {y
 #       target = var.cpu_utilization_target
 #     }
 #   }

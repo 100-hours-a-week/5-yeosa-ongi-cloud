@@ -17,10 +17,3 @@ resource "google_compute_subnetwork" "subnet_server" {
   network                  = google_compute_network.vpc.id
   private_ip_google_access = true
 }
-
-resource "google_compute_subnetwork" "subnet_db" {
-  name                     = var.db_subnet_name
-  ip_cidr_range            = var.db_ip_cidr_range
-  network                  = google_compute_network.vpc.id
-  private_ip_google_access = true
-}

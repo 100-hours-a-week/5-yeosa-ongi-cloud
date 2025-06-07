@@ -3,37 +3,53 @@
 5조 여사팀 "온기" 서비스 Cloud Terraform 레포지토리입니다.
 ---
 ```
-v2-3-tier/
-├── env/                            # 환경별 인프라 정의
-│   ├── dev/                        # 개발 환경
-│   │   ├── main.tf                 # 모듈 호출 및 구성
-│   │   ├── provider.tf             # GCP provider 설정
-│   │   ├── terraform.tfvars        # 변수 값 정의
-│   │   ├── variables.tf            # 환경에서 사용하는 변수 선언
-│   │   ├── backend-config.hcl      # (Git 제외 권장) 상태 저장소 설정
-│   │   └── scripts/                # 초기화, 배포 스크립트 등
-│   ├── prod/                       # 운영 환경 (dev와 동일 구조)
+5-YEOSA-ONGI-CLOUD/
+├── v1-single-instance/
+│   ├── env/                          # 환경별 인프라 구성
+│   │   ├── dev/                      # 개발 환경용 main.tf, tfvars 등
+│   │   └── prod/                     # 운영 환경용 main.tf, tfvars 등
+│   │
+│   ├── modules/                     # GCP 단일 인스턴스용 공통 모듈
+│   │   ├── aws/                     # (예비용 or 공유 자원)
+│   │   ├── gcp/
+│   │   │   ├── cdn/                 # GCS + CDN 설정 (정적 파일 서빙용)
+│   │   │   ├── firewall/            # 방화벽 설정 (SSH, HTTP 등 포트 허용)
+│   │   │   ├── instance/            # 단일 GCE 인스턴스 생성 (VM 구성)
+│   │   │   ├── snapshot_policy/     # 디스크 스냅샷 정책 관리
+│   │   │   └── vpc/         
 │
-├── modules/                        # 공통 인프라 구성 모듈
-│   └── gcp/                        # GCP 관련 모듈 모음
-│       ├── vpc/                    # VPC, Subnet 정의
-│       ├── firewall/               # 방화벽 규칙 설정
-│       ├── storage/                # GCS 버킷 관련 모듈
-│       ├── openvpn/                # VPN 서버 인스턴스 구성
-│       ├── alb/                    # Application Load Balancer 설정
-│       ├── cdn/                    # GCS + BackendBucket + CDN 구성
-│       ├── dns/                    # Cloud DNS A레코드, zone 설정
-│       ├── backend-instance/       # 백엔드 인스턴스 템플릿
-│       ├── backend-service/        # 백엔드 서비스용 LB/MIG 등
-│       ├── ai-instance/            # AI 서버 인스턴스 (FastAPI 등)
-│       ├── nat/                    # Cloud NAT 구성
-│       ├── db/                     # Cloud SQL / MySQL 설정
-│       │   ├── peering.tf          # VPC Peering 구성
-│       │   ├── replica.tf          # Read Replica 구성
-│       └── mig/                    # Managed Instance Group (MIG) 관련
+├── v2-3-tier/                       # 현재 사용 중인 3-Tier 아키텍처 환경별 구성
+│   ├── env/                         # 환경별 tfvars, backend 설정
+│   │   ├── dev/
+│   │   └── prod/
+│   │
+│   ├── scripts/                     # GCE startup script 등 셸 스크립트
+│   ├── backend.tf                   # Terraform backend 설정
+│   ├── main.tf                      # 환경별 module 호출
+│   ├── provider.tf                  # GCP provider 정의
+│   ├── terraform.tfvars             # 주요 변수 정의
+│   └── variables.tf                 # input variables 선언
 │
-└── .terraform.lock.hcl            # Terraform provider 버전 잠금 파일
-
+├── modules/
+│   ├── gcp/
+│   │   ├── vpc/                     # VPC, 서브넷, 라우팅 설정
+│   │   ├── firewall/                # 방화벽 규칙 정의
+│   │   ├── nat/                     # NAT 게이트웨이 구성
+│   │   ├── instance/                # 단일 인스턴스 (GCE) 구성
+│   │   ├── mig/                     # Managed Instance Group 구성
+│   │   ├── backend-instance/        # 백엔드 서버 GCE 인스턴스 (템플릿 기반)
+│   │   ├── backend-service/         # 백엔드용 Load Balancer Backend Service
+│   │   ├── db/                      # Cloud SQL DB (primary, replica, peering)
+│   │   ├── openvpn/                 # OpenVPN 인스턴스 구성
+│   │   ├── cdn, alb/                # GCS 기반 CDN + Load Balancer 구성
+│   │   ├── ai-instance/             # AI 모델용 서버 인스턴스
+│   │   ├── ai-service/              # AI 백엔드 서비스용 LB 설정
+│   │   ├── storage/                 # GCS 및 IAM 설정
+│   │   ├── dns/                     # Cloud DNS 레코드 정의
+│   │   └── shared/                  # 공통 변수 또는 재사용 모듈
+│
+│
+└── .gitignore
 ```
 
 ## v1-single-instance
