@@ -13,7 +13,3 @@ output "subnet_openvpn_self_link" {
 output "subnet_server_self_link" {
   value = google_compute_subnetwork.subnet_server.self_link
 }
-
-output "subnet_db_self_link" {
-  value = google_compute_subnetwork.subnet_db.self_link
-}
