@@ -3,7 +3,7 @@ resource "google_compute_firewall" "allow_tcp_ports" {
   network = var.vpc
 
   allow {
-    protocol = "tcp"
+    protocol = var.protocol
     ports = var.allowed_ports
   }
 

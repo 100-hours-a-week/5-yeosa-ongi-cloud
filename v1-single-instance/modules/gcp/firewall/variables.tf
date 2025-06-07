@@ -6,6 +6,12 @@ variable "vpc" {
   type = string
 }
 
+variable "protocol" {
+  type        = string
+  description = "Protocol to allow (e.g., tcp, udp, icmp)"
+  default     = "tcp"
+}
+
 variable "target_tags" {
   type = list(string)
 }
