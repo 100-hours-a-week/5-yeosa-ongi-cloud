@@ -52,7 +52,7 @@ module "monitor_instance" {
   boot_disk_type  = "pd-standard"
   vpc             = module.vpc.vpc_name
   subnet          = module.vpc.subnet_self_link
-  tags            = ["prod-monitor"]
+  tags            = ["http-server","https-server","prod-monitor"]
   assign_external_ip = true
   use_static_ip  = true
 }
@@ -62,7 +62,7 @@ module "firewall_allow_ai" {
   firewall_name = "prod-allow-ai"
   vpc           = module.vpc.vpc_name
   allowed_ports = ["8000"]
-  source_tags   = ["prod-web"]
+  source_ranges = var.web_ip_ranges
   target_tags   = ["prod-ai"]
 }
 
@@ -81,7 +81,7 @@ module "firewall_allow_http_ssh" {
   vpc           = module.vpc.vpc_name
   allowed_ports = ["22", "80", "443"]
   source_ranges = ["0.0.0.0/0"]
-  target_tags   = ["prod-web", "prod-ai"]
+  target_tags   = ["prod-web", "prod-ai","prod-monitor"]
 }
 
 module "firewall_allow_prometheus" {
@@ -90,7 +90,7 @@ module "firewall_allow_prometheus" {
   vpc           = module.vpc.vpc_name
   allowed_ports = ["9090"]
   source_ranges = ["211.244.225.0/24"]
-  target_tags   = ["prod-monior"]
+  target_tags   = ["prod-monitor"]
 }
 
 module "firewall_allow_grafana" {
@@ -99,7 +99,34 @@ module "firewall_allow_grafana" {
   vpc           = module.vpc.vpc_name
   allowed_ports = ["3000"]
   source_ranges = ["211.244.225.0/24"]
-  target_tags   = ["prod-monior"]
+  target_tags   = ["prod-monitor"]
+}
+
+module "firewall_allow_mysql" {
+  source        = "../../modules/gcp/firewall"
+  firewall_name = "prod-allow-mysql"
+  vpc           = module.vpc.vpc_name
+  allowed_ports = ["3306"]
+  source_ranges = ["211.244.225.0/24"]
+  target_tags   = ["prod-web"]
+}
+
+module "firewall_allow_monitor_to_web" {
+  source        = "../../modules/gcp/firewall"
+  firewall_name = "prod-allow-monitor-to-web"
+  vpc           = module.vpc.vpc_name
+  allowed_ports = ["9100","9104"]
+  source_tags   = ["prod-monitor"]
+  target_tags   = ["prod-web"]
+}
+
+module "firewall_allow_monitor_to_ai" {
+  source        = "../../modules/gcp/firewall"
+  firewall_name = "prod-allow-monitor-to-ai"
+  vpc           = module.vpc.vpc_name
+  allowed_ports = ["9100"]
+  source_tags   = ["prod-monitor"]
+  target_tags   = ["prod-ai"]
 }
 
 module "snapshot_policy" {
