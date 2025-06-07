@@ -20,5 +20,6 @@ resource "google_compute_firewall" "allow_tcp_udp_ports" {
 
   source_tags   = var.source_tags != null ? var.source_tags : null
   source_ranges = var.source_ranges != null ? var.source_ranges : null
-  target_tags   = var.target_tags
+  target_tags   = var.target_tags != null ? var.target_tags : null
+  destination_ranges = var.destination_ranges != null ? var.destination_ranges : null
 }
