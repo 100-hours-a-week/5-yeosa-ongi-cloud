@@ -73,7 +73,7 @@ jobs:
       run: |
         case "${{ steps.set-env.outputs.env_path }}" in
         v1-single-instance/env/dev)
-            echo "${{ secrets.TFVARS_DEV }}" > terraform.tfvars
+            printf "%s\n" "${{ secrets.TFVARS_DEV }}" > terraform.tfvars
             ;;
         # v1-single-instance/env/prod)
         #     echo "${{ secrets.TFVARS_PROD }}" > terraform.tfvars
