@@ -33,7 +33,7 @@ module "ai_instance" {
   zone            = var.zone
   machine_type    = "e2-standard-4"
   boot_image      = "ubuntu-os-cloud/ubuntu-2204-lts"
-  boot_disk_size  = 30
+  boot_disk_size  = 20
   boot_disk_type  = "pd-standard"
   vpc             = module.vpc.vpc_name
   subnet          = module.vpc.subnet_self_link
