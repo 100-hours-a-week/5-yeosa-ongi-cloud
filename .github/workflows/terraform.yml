@@ -70,21 +70,15 @@ jobs:
     - name: Create terraform.tfvars from Secrets
       if: steps.set-env.outputs.env_path != ''
       working-directory: ${{ steps.set-env.outputs.env_path }}
+      env:
+       TFVARS_DEV: ${{ secrets.TFVARS_DEV }}
       run: |
         case "${{ steps.set-env.outputs.env_path }}" in
         v1-single-instance/env/dev)
-            printf "%s\n" "${{ secrets.TFVARS_DEV }}" > terraform.tfvars
+            echo "$TFVARS_DEV" > terraform.tfvars
             ;;
-        # v1-single-instance/env/prod)
-        #     echo "${{ secrets.TFVARS_PROD }}" > terraform.tfvars
-        #     ;;
-        # v2-3-tier/env/dev)
-        #     echo "${{ secrets.TFVARS_V2_DEV }}" > terraform.tfvars
-        #     ;;
-        # v2-3-tier/env/prod)
-        #     echo "${{ secrets.TFVARS_V2_PROD }}" > terraform.tfvars
-        #     ;;
         esac
+      
 
     - name: Terraform Init
       if: steps.set-env.outputs.env_path != ''
