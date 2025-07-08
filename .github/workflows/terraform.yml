@@ -89,8 +89,7 @@ jobs:
     - name: Terraform Init
       if: steps.set-env.outputs.env_path != ''
       working-directory: ${{ steps.set-env.outputs.env_path }}
-      run: terraform init \
-        -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="prefix=${{ steps.set-env.outputs.env_path }}/terraform.tfstate"
+      run: terraform init -backend-config="bucket=${{ secrets.TFSTATE_BUCKET }}" -backend-config="prefix=${{ steps.set-env.outputs.env_path }}/terraform.tfstate"
 
     - name: Terraform Plan
       if: steps.set-env.outputs.env_path != ''
