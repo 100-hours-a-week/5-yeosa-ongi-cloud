@@ -23,7 +23,7 @@ module "web_instance" {
   vpc             = module.vpc.vpc_name
   subnet          = module.vpc.subnet_self_link
   tags            = ["dev-web"]
-  assign_external_ip = true
+  assign_external_ip = false
   use_static_ip  = true
 }
 
@@ -33,7 +33,7 @@ module "ai_instance" {
   zone            = var.zone
   machine_type    = "e2-standard-4"
   boot_image      = "ubuntu-os-cloud/ubuntu-2204-lts"
-  boot_disk_size  = 40
+  boot_disk_size  = 30
   boot_disk_type  = "pd-standard"
   vpc             = module.vpc.vpc_name
   subnet          = module.vpc.subnet_self_link
