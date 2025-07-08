@@ -2,14 +2,14 @@ name: Terraform Apply by Changed Directory
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main,dev ]
     paths:
       - 'v1-single-instance/env/dev/**'
       - 'v1-single-instance/env/prod/**'
       - 'v2-3-tier/env/dev/**'
       - 'v2-3-tier/env/prod/**'
   pull_request:
-    branches: [ main ]
+    branches: [ main,dev ]
     paths:
       - 'v1-single-instance/env/dev/**'
       - 'v1-single-instance/env/prod/**'
