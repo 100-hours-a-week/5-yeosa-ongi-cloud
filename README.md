@@ -28,25 +28,24 @@
 │   ├── main.tf                      # 환경별 module 호출
 │   ├── provider.tf                  # GCP provider 정의
 │   ├── terraform.tfvars             # 주요 변수 정의
-│   └── variables.tf                 # input variables 선언
-│
-├── modules/
-│   ├── gcp/
-│   │   ├── vpc/                     # VPC, 서브넷, 라우팅 설정
-│   │   ├── firewall/                # 방화벽 규칙 정의
-│   │   ├── nat/                     # NAT 게이트웨이 구성
-│   │   ├── instance/                # 단일 인스턴스 (GCE) 구성
-│   │   ├── mig/                     # Managed Instance Group 구성
-│   │   ├── backend-instance/        # 백엔드 서버 GCE 인스턴스 (템플릿 기반)
-│   │   ├── backend-service/         # 백엔드용 Load Balancer Backend Service
-│   │   ├── db/                      # Cloud SQL DB (primary, replica, peering)
-│   │   ├── openvpn/                 # OpenVPN 인스턴스 구성
-│   │   ├── cdn, alb/                # GCS 기반 CDN + Load Balancer 구성
-│   │   ├── ai-instance/             # AI 모델용 서버 인스턴스
-│   │   ├── ai-service/              # AI 백엔드 서비스용 LB 설정
-│   │   ├── storage/                 # GCS 및 IAM 설정
-│   │   ├── dns/                     # Cloud DNS 레코드 정의
-│   │   └── shared/                  # 공통 변수 또는 재사용 모듈
+│   ├── variables.tf                 # input variables 선언
+│   ├── modules/
+│   │   ├── gcp/
+│   │   │   ├── vpc/                     # VPC, 서브넷, 라우팅 설정
+│   │   │   ├── firewall/                # 방화벽 규칙 정의
+│   │   │   ├── nat/                     # NAT 게이트웨이 구성
+│   │   │   ├── instance/                # 단일 인스턴스 (GCE) 구성
+│   │   │   ├── mig/                     # Managed Instance Group 구성
+│   │   │   ├── backend-instance/        # 백엔드 서버 GCE 인스턴스 (템플릿 기반)
+│   │   │   ├── backend-service/         # 백엔드용 Load Balancer Backend Service
+│   │   │   ├── db/                      # Cloud SQL DB (primary, replica, peering)
+│   │   │   ├── openvpn/                 # OpenVPN 인스턴스 구성
+│   │   │   ├── cdn, alb/                # GCS 기반 CDN + Load Balancer 구성
+│   │   │   ├── ai-instance/             # AI 모델용 서버 인스턴스
+│   │   │   ├── ai-service/              # AI 백엔드 서비스용 LB 설정
+│   │   │   ├── storage/                 # GCS 및 IAM 설정
+│   │   │   ├── dns/                     # Cloud DNS 레코드 정의
+│   │   │   └── shared/                  # 공통 변수 또는 재사용 모듈
 │
 │
 └── .gitignore
@@ -57,6 +56,35 @@
 
 ## v2-3-tier
 ![5-ys-Architecture-PNG 내보내기 창 drawio (1)](https://github.com/user-attachments/assets/5f198a10-ffe0-40a4-96d3-3ce92e39b73e)
+
+## Terraform CI/CD
+- **환경 분리된 구조**: `v1-single-instance`, `v2-3-tier` 아키텍처로 구성되며, 각각 `env/dev`, `env/prod` 환경을 지원합니다.
+- **자동화된 적용**: `main`, `dev` 브랜치에서 환경별 디렉터리 파일이 변경되면 Terraform `plan` 및 `apply`가 자동 실행됩니다.
+- **보안된 변수 관리**: 환경별 `.tfvars` 파일은 GitHub Secrets에 저장되어 파이프라인 내에서 안전하게 주입됩니다.
+- **변경 감지 기반 실행**: 변경된 디렉터리만 선택적으로 실행하여 빠르고 효율적인 배포가 가능합니다.
+
+### 동작 흐름
+
+1. 특정 환경(`v1-single-instance/env/dev` 등)의 코드가 커밋되면 워크플로우 트리거
+2. 변경된 경로에 따라 `terraform init`, `plan`, `apply` 단계 실행
+3. 환경에 맞는 Secret 변수 (`TFVARS_DEV`, `TFVARS_PROD`, ...)를 불러와 `terraform.tfvars` 생성
+4. 인프라가 자동으로 배포 또는 갱신
+
+### Secrets 예시
+
+| 환경 디렉터리 | Secret 이름 |
+| --- | --- |
+| `v1-single-instance/dev` | `TFVARS_DEV` |
+| `v1-single-instance/prod` | `TFVARS_PROD` |
+| `v2-3-tier/dev` | `TFVARS_V2_DEV` |
+| `v2-3-tier/prod` | `TFVARS_V2_PROD` |
+
+### 실행 조건
+
+워크플로우는 다음 조건일 때 실행됩니다:
+
+- 브랜치: `main`, `dev`
+- 경로: `v1-single-instance/env/**`, `v2-3-tier/env/**`
 
 
 ## Commit Convention
